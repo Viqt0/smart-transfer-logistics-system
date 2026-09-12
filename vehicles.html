@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block content %}<h1>Vehicle Management</h1>
+<form class="form compact" method="post"><input name="plate_no" placeholder="Plate number" required><input name="type" placeholder="Vehicle type" required><input type="number" step="0.1" name="capacity" placeholder="Capacity kg" required><input type="date" name="next_maintenance"><button class="btn">Add Vehicle</button></form>
+<table><tr><th>Plate</th><th>Type</th><th>Capacity</th><th>Status</th><th>Next Maintenance</th></tr>{% for x in vehicles %}<tr><td>{{x.plate_no}}</td><td>{{x.type}}</td><td>{{x.capacity}} kg</td><td>{{x.status}}</td><td>{{x.next_maintenance or '-'}}</td></tr>{% endfor %}</table>{% endblock %}

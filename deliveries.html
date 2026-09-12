@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<div class="head"><h1>Deliveries</h1><a class="btn" href="/deliveries/add">+ New Delivery</a></div>
+<table><tr><th>ID</th><th>Customer</th><th>Route</th><th>Schedule</th><th>Status</th><th>Driver</th><th>Vehicle</th><th>Actions</th></tr>
+{% for d in deliveries %}<tr><td>{{d.id}}</td><td>{{d.customer}}</td><td>{{d.origin}} → {{d.destination}}</td><td>{{d.schedule_date}} {{d.schedule_time}}</td>
+<td>{{d.status}}</td><td>{{d.driver or '-'}}</td><td>{{d.plate_no or '-'}}</td><td><a href="/deliveries/{{d.id}}/assign">Assign</a>
+{% if d.status != 'Failed' %}<form class="inline" method="post" action="/deliveries/{{d.id}}/fail"><input name="reason" placeholder="Failure reason" required><button>Fail</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="8">No deliveries yet.</td></tr>{% endfor %}</table>{% endblock %}

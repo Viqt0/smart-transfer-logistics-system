@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}<h1>Failed Deliveries</h1>
+<table><tr><th>ID</th><th>Customer</th><th>Route</th><th>Reason</th><th>Reschedule</th></tr>
+{% for d in deliveries %}<tr><td>{{d.id}}</td><td>{{d.customer}}</td><td>{{d.origin}} → {{d.destination}}</td><td>{{d.failure_reason}}</td><td>
+<form class="inline" method="post" action="/deliveries/{{d.id}}/reschedule"><input type="date" name="date" required><input type="time" name="time" required><button>Reschedule</button></form></td></tr>
+{% else %}<tr><td colspan="5">No failed deliveries.</td></tr>{% endfor %}</table>{% endblock %}

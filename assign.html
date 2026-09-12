@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}<h1>Allocate Delivery #{{delivery.id}}</h1>
+<p><b>{{delivery.customer}}</b>: {{delivery.origin}} → {{delivery.destination}}</p>
+<form class="form" method="post"><label>Driver<select name="driver_id"><option value="">Select driver</option>{% for x in drivers %}<option value="{{x.id}}" {% if x.id==delivery.driver_id %}selected{% endif %}>{{x.name}} — {{x.status}}</option>{% endfor %}</select></label>
+<label>Vehicle<select name="vehicle_id"><option value="">Select vehicle</option>{% for x in vehicles %}<option value="{{x.id}}" {% if x.id==delivery.vehicle_id %}selected{% endif %}>{{x.plate_no}} — {{x.type}} — {{x.capacity}}kg</option>{% endfor %}</select></label>
+<button class="btn">Save Allocation</button></form>{% endblock %}
