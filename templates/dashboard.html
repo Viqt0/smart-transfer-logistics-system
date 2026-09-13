@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h1>Dashboard</h1><div class="cards">
+<div><b>{{counts.deliveries}}</b><span>Total Deliveries</span></div><div><b>{{counts.drivers}}</b><span>Drivers</span></div>
+<div><b>{{counts.vehicles}}</b><span>Vehicles</span></div><div><b>{{counts.failed}}</b><span>Failed Deliveries</span></div></div>
+<h2>Recent Deliveries</h2><table><tr><th>ID</th><th>Customer</th><th>Destination</th><th>Schedule</th><th>Status</th><th>Driver</th><th>Vehicle</th></tr>
+{% for d in recent %}<tr><td>#{{d.id}}</td><td>{{d.customer}}</td><td>{{d.destination}}</td><td>{{d.schedule_date}} {{d.schedule_time}}</td>
+<td><span class="status">{{d.status}}</span></td><td>{{d.driver or '-'}}</td><td>{{d.plate_no or '-'}}</td></tr>{% else %}<tr><td colspan="7">No deliveries yet.</td></tr>{% endfor %}</table>{% endblock %}
