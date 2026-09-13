@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block content %}<h1>Driver Management</h1>
+<form class="form compact" method="post"><input name="name" placeholder="Driver name" required><input name="phone" placeholder="Phone"><input name="license_no" placeholder="License number"><button class="btn">Add Driver</button></form>
+<table><tr><th>Name</th><th>Phone</th><th>License</th><th>Status</th></tr>{% for x in drivers %}<tr><td>{{x.name}}</td><td>{{x.phone}}</td><td>{{x.license_no}}</td><td>{{x.status}}</td></tr>{% endfor %}</table>{% endblock %}
