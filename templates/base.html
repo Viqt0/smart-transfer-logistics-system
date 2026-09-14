@@ -1,6 +1,181 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Smart Logistics</title><link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"></head>
-<body><aside><h2>Smart Logistics</h2><nav>
-<a href="/">Dashboard</a><a href="/deliveries">Deliveries</a><a href="/drivers">Drivers</a>
-<a href="/vehicles">Vehicles</a><a href="/maintenance">Maintenance</a><a href="/failed">Failed Deliveries</a>
-</nav></aside><main>{% with messages=get_flashed_messages() %}{% for m in messages %}<div class="flash">{{m}}</div>{% endfor %}{% endwith %}{% block content %}{% endblock %}</main></body></html>
+<!doctype html>
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Smart Transfer & Logistics Planning System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+{% if session.get("user_id") %}
+
+<aside>
+
+    <h2>Smart Logistics</h2>
+
+    <nav>
+
+        <a href="{{ url_for('portal') }}">
+            My Portal
+        </a>
+
+
+        {% if session.get("role") == "Customer" %}
+
+        <a href="{{ url_for('add_delivery') }}">
+            Request Delivery
+        </a>
+
+        <a href="{{ url_for('deliveries') }}">
+            My Deliveries
+        </a>
+
+
+        {% elif session.get("role") == "Driver" %}
+
+        <a href="{{ url_for('deliveries') }}">
+            Assigned Deliveries
+        </a>
+
+
+        {% elif session.get("role") == "Dispatcher" %}
+
+        <a href="{{ url_for('deliveries') }}">
+            Deliveries
+        </a>
+
+        <a href="{{ url_for('drivers') }}">
+            Drivers
+        </a>
+
+        <a href="{{ url_for('vehicles') }}">
+            Vehicles
+        </a>
+
+        <a href="{{ url_for('failed') }}">
+            Failed Deliveries
+        </a>
+
+
+        {% elif session.get("role") == "Logistics Manager" %}
+
+        <a href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('deliveries') }}">
+            Deliveries
+        </a>
+
+        <a href="{{ url_for('drivers') }}">
+            Drivers
+        </a>
+
+        <a href="{{ url_for('vehicles') }}">
+            Vehicles
+        </a>
+
+        <a href="{{ url_for('maintenance') }}">
+            Maintenance
+        </a>
+
+        <a href="{{ url_for('failed') }}">
+            Failed Deliveries
+        </a>
+
+
+        {% elif session.get("role") == "Administrator" %}
+
+        <a href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('deliveries') }}">
+            Deliveries
+        </a>
+
+        <a href="{{ url_for('drivers') }}">
+            Drivers
+        </a>
+
+        <a href="{{ url_for('vehicles') }}">
+            Vehicles
+        </a>
+
+        <a href="{{ url_for('maintenance') }}">
+            Maintenance
+        </a>
+
+        <a href="{{ url_for('failed') }}">
+            Failed Deliveries
+        </a>
+
+        {% endif %}
+
+    </nav>
+
+
+    <div class="user-menu">
+
+        <strong>
+            {{ session.get("name") }}
+        </strong>
+
+        <span>
+            {{ session.get("role") }}
+        </span>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</aside>
+
+{% endif %}
+
+
+<main>
+
+    {% with messages = get_flashed_messages() %}
+
+        {% for m in messages %}
+
+        <div class="flash">
+            {{ m }}
+        </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+
+    {% block content %}
+
+    {% endblock %}
+
+</main>
+
+
+</body>
+
+</html>
