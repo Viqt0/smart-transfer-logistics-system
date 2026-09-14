@@ -142,15 +142,13 @@ def login_required(f):
 
 def role_required(*allowed_roles):
     def decorator(f):
-
         @wraps(f)
         def decorated_function(*args, **kwargs):
-
             if "user_id" not in session:
                 flash("Please login to continue.")
                 return redirect(url_for("login"))
 
-                        if session.get("role") not in allowed_roles:
+            if session.get("role") not in allowed_roles:
                 flash("You do not have permission to access this section.")
                 return redirect(url_for("portal"))
 
