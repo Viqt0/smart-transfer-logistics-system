@@ -447,5 +447,6 @@ def failed():
     return render_template("failed.html", deliveries=rows)
 
 init_db()
+create_admin()
 if __name__=="__main__":
     app.run(debug=True)
