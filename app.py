@@ -1,40 +1,157 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
-import sqlite3, os
-from datetime import datetime
+import sqlite3
+from functools import wraps
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'dev-only-change-this')
+app.secret_key = os.environ.get("SECRET_KEY", "dev-only-change-this")
+
 DB = "logistics.db"
+
+
+# =========================
+# DATABASE
+# =========================
 
 def db():
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
     return con
 
+
 def init_db():
     con = db()
+
     con.executescript("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        phone TEXT,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL,
+        status TEXT DEFAULT 'Active',
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS drivers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL, phone TEXT, license_no TEXT, status TEXT DEFAULT 'Available'
+        name TEXT NOT NULL,
+        phone TEXT,
+        license_no TEXT,
+        status TEXT DEFAULT 'Available'
     );
+
     CREATE TABLE IF NOT EXISTS vehicles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        plate_no TEXT NOT NULL UNIQUE, type TEXT NOT NULL, capacity REAL NOT NULL,
-        status TEXT DEFAULT 'Available', next_maintenance TEXT
+        plate_no TEXT NOT NULL UNIQUE,
+        type TEXT NOT NULL,
+        capacity REAL NOT NULL,
+        status TEXT DEFAULT 'Available',
+        next_maintenance TEXT
     );
+
     CREATE TABLE IF NOT EXISTS deliveries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        customer TEXT NOT NULL, phone TEXT, origin TEXT, destination TEXT,
-        package_weight REAL DEFAULT 0, package_size TEXT, priority TEXT DEFAULT 'Normal',
-        schedule_date TEXT, schedule_time TEXT, status TEXT DEFAULT 'Pending',
-        driver_id INTEGER, vehicle_id INTEGER, failure_reason TEXT,
+        customer TEXT NOT NULL,
+        phone TEXT,
+        origin TEXT,
+        destination TEXT,
+        package_weight REAL DEFAULT 0,
+        package_size TEXT,
+        priority TEXT DEFAULT 'Normal',
+        schedule_date TEXT,
+        schedule_time TEXT,
+        status TEXT DEFAULT 'Pending',
+        driver_id INTEGER,
+        vehicle_id INTEGER,
+        failure_reason TEXT,
         FOREIGN KEY(driver_id) REFERENCES drivers(id),
         FOREIGN KEY(vehicle_id) REFERENCES vehicles(id)
     );
+
     CREATE TABLE IF NOT EXISTS maintenance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        vehicle_id INTEGER NOT NULL,
+        service_date TEXT,
+        description TEXT,
+        next_date TEXT,
+        cost REAL DEFAULT 0,
+        FOREIGN KEY(vehicle_id) REFERENCES vehicles(id)
+    );
+    """)
+
+    con.commit()
+    con.close()
+
+
+# =========================
+# ADMIN ACCOUNT
+# =========================
+
+def create_admin():
+    admin_email = os.environ.get("ADMIN_EMAIL")
+    admin_password = os.environ.get("ADMIN_PASSWORD")
+
+    if not admin_email or not admin_password:
+        return
+
+    con = db()
+
+    existing = con.execute(
+        "SELECT id FROM users WHERE email=?",
+        (admin_email,)
+    ).fetchone()
+
+    if not existing:
+        con.execute("""
+            INSERT INTO users
+            (name, email, phone, password, role, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            "Onwuekwe Victor",
+            admin_email,
+            "",
+            generate_password_hash(admin_password),
+            "Administrator",
+            "Active"
+        ))
+
+        con.commit()
+
+    con.close()
+
+
+# =========================
+# AUTHENTICATION
+# =========================
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+
+        if "user_id" not in session:
+            flash("Please login to continue.")
+            return redirect(url_for("login"))
+
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def role_required(*allowed_roles):
+    def decorator(f):
+
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+
+            if "user_id" not in session:
+                flash("Please login to continue.")
+                return redirect(url_for("login"))
+
+            if session.get("role") not in allowed_roles:
+                flash("You do not have permission to access        id INTEGER PRIMARY KEY AUTOINCREMENT,
         vehicle_id INTEGER NOT NULL, service_date TEXT, description TEXT,
         next_date TEXT, cost REAL DEFAULT 0,
         FOREIGN KEY(vehicle_id) REFERENCES vehicles(id)
