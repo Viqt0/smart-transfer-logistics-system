@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="portal-page">
+
+    <div class="portal-header">
+        <div>
+            <h1>{{ portal_title }}</h1>
+            <p>Welcome, <strong>{{ session.get('name') }}</strong></p>
+        </div>
+
+        <div class="role-badge">
+            {{ session.get('role') }}
+        </div>
+    </div>
+
+
+    {% if portal_type == "customer" %}
+
+    <div class="portal-section">
+
+        <h2>What would you like to transport?</h2>
+
+        <p>
+            Create a transportation request by providing your pickup,
+            destination and package information.
+        </p>
+
+        <div class="portal-actions">
+
+            <a href="{{ url_for('add_delivery') }}" class="portal-card">
+                <h3>Request Transportation</h3>
+                <p>Create a new delivery request.</p>
+            </a>
+
+            <a href="{{ url_for('deliveries') }}" class="portal-card">
+                <h3>My Deliveries</h3>
+                <p>View your delivery requests and status.</p>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% elif portal_type == "driver" %}
+
+    <div class="portal-section">
+
+        <h2>Driver Operations</h2>
+
+        <p>
+            View and manage deliveries assigned to you.
+        </p>
+
+        <div class="portal-actions">
+
+            <a href="{{ url_for('deliveries') }}" class="portal-card">
+                <h3>Assigned Deliveries</h3>
+                <p>View deliveries assigned to you.</p>
+            </a>
+
+            <a href="{{ url_for('vehicles') }}" class="portal-card">
+                <h3>Vehicle Information</h3>
+                <p>View available vehicle information.</p>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% elif portal_type == "dispatcher" %}
+
+    <div class="portal-section">
+
+        <h2>Dispatch Operations</h2>
+
+        <p>
+            Coordinate deliveries, drivers and vehicles.
+        </p>
+
+        <div class="portal-actions">
+
+            <a href="{{ url_for('deliveries') }}" class="portal-card">
+                <h3>Manage Deliveries</h3>
+                <p>View and coordinate delivery requests.</p>
+            </a>
+
+            <a href="{{ url_for('drivers') }}" class="portal-card">
+                <h3>Manage Drivers</h3>
+                <p>View driver availability.</p>
+            </a>
+
+            <a href="{{ url_for('vehicles') }}" class="portal-card">
+                <h3>Manage Vehicles</h3>
+                <p>View vehicle availability.</p>
+            </a>
+
+            <a href="{{ url_for('failed') }}" class="portal-card">
+                <h3>Failed Deliveries</h3>
+                <p>Handle failed deliveries and rescheduling.</p>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% elif portal_type == "manager" %}
+
+    <div class="portal-section">
+
+        <h2>Logistics Planning</h2>
+
+        <p>
+            Monitor operations and make logistics planning decisions.
+        </p>
+
+        <div class="portal-actions">
+
+            <a href="{{ url_for('dashboard') }}" class="portal-card">
+                <h3>Operations Dashboard</h3>
+                <p>View overall logistics activity.</p>
+            </a>
+
+            <a href="{{ url_for('deliveries') }}" class="portal-card">
+                <h3>Delivery Planning</h3>
+                <p>Monitor and plan deliveries.</p>
+            </a>
+
+            <a href="{{ url_for('drivers') }}" class="portal-card">
+                <h3>Driver Management</h3>
+                <p>Monitor driver availability.</p>
+            </a>
+
+            <a href="{{ url_for('vehicles') }}" class="portal-card">
+                <h3>Vehicle Management</h3>
+                <p>Monitor vehicles and availability.</p>
+            </a>
+
+            <a href="{{ url_for('maintenance') }}" class="portal-card">
+                <h3>Vehicle Maintenance</h3>
+                <p>Monitor vehicle maintenance records.</p>
+            </a>
+
+            <a href="{{ url_for('failed') }}" class="portal-card">
+                <h3>Failed Deliveries</h3>
+                <p>Review delivery failures and rescheduling.</p>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% elif portal_type == "admin" %}
+
+    <div class="portal-section">
+
+        <h2>System Administration</h2>
+
+        <p>
+            You have full administrative access to the system.
+        </p>
+
+        <div class="portal-actions">
+
+            <a href="{{ url_for('dashboard') }}" class="portal-card">
+                <h3>System Dashboard</h3>
+                <p>View the overall system.</p>
+            </a>
+
+            <a href="{{ url_for('drivers') }}" class="portal-card">
+                <h3>Drivers</h3>
+                <p>Manage driver records.</p>
+            </a>
+
+            <a href="{{ url_for('vehicles') }}" class="portal-card">
+                <h3>Vehicles</h3>
+                <p>Manage vehicle records.</p>
+            </a>
+
+            <a href="{{ url_for('maintenance') }}" class="portal-card">
+                <h3>Maintenance</h3>
+                <p>Manage vehicle maintenance.</p>
+            </a>
+
+            <a href="{{ url_for('deliveries') }}" class="portal-card">
+                <h3>Deliveries</h3>
+                <p>Manage all delivery operations.</p>
+            </a>
+
+            <a href="{{ url_for('failed') }}" class="portal-card">
+                <h3>Failed Deliveries</h3>
+                <p>Review and manage failed deliveries.</p>
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
