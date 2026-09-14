@@ -321,13 +321,14 @@ def dashboard():
     con.close()
     return render_template("dashboard.html", counts=counts, recent=recent)
 
-  @app.route("/deliveries")
- @login_required
+@app.route("/deliveries")
+@login_required
 @role_required("Administrator", "Logistics Manager", "Dispatcher", "Driver")
 def deliveries():
-    con=db()
-    rows=con.execute("""SELECT d.*, dr.name driver, v.plate_no FROM deliveries d
-        LEFT JOIN drivers dr ON d.driver_id=dr.id LEFT JOIN vehicles v ON d.vehicle_id=v.id
+    con = db()
+    rows = con.execute("""SELECT d.*, dr.name driver, v.plate_no FROM deliveries d
+        LEFT JOIN drivers dr ON d.driver_id=dr.id
+        LEFT JOIN vehicles v ON d.vehicle_id=v.id
         ORDER BY d.id DESC""").fetchall()
     con.close()
     return render_template("deliveries.html", deliveries=rows)
