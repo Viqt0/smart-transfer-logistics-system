@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-tag">SMART TRANSFER & LOGISTICS</span>
+
+        <h1>Moving Your Goods.<br>
+            <span>Connecting Your World.</span>
+        </h1>
+
+        <p>
+            Manage delivery requests, coordinate drivers, organise vehicles
+            and monitor your logistics operations from one simple platform.
+        </p>
+
+        <div class="hero-buttons">
+            {% if session.get("user_id") %}
+                <a href="{{ url_for('portal') }}" class="btn">
+                    Open My Portal →
+                </a>
+                <a href="{{ url_for('deliveries') }}" class="btn btn-outline">
+                    View Deliveries
+                </a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn">
+                    Get Started →
+                </a>
+                <a href="{{ url_for('signup') }}" class="btn btn-outline">
+                    Create Account
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="delivery-icon">🚚</div>
+        <div class="floating-card">
+            <span class="status-dot"></span>
+            <div>
+                <strong>Smart Delivery Management</strong>
+                <p>Plan. Assign. Deliver.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="section-heading">
+        <span class="hero-tag">OUR PLATFORM</span>
+        <h2>Everything You Need to Move Smarter</h2>
+        <p>Organised tools for better delivery and logistics management.</p>
+    </div>
+
+    <div class="feature-grid">
+        <article class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>Delivery Management</h3>
+            <p>Record delivery requests and organise shipment information
+               in one place.</p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">👨‍✈️</div>
+            <h3>Driver Coordination</h3>
+            <p>Maintain driver records and support the assignment
+               of delivery jobs.</p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">🚛</div>
+            <h3>Vehicle Management</h3>
+            <p>Keep vehicle details organised and monitor vehicle
+               availability and maintenance.</p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3>Delivery Planning</h3>
+            <p>Organise delivery schedules and handle failed deliveries
+               and rescheduling.</p>
+        </article>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div>
+        <h2>Ready to manage your logistics?</h2>
+        <p>Access the tools available for your account.</p>
+    </div>
+
+    {% if session.get("user_id") %}
+        <a href="{{ url_for('portal') }}" class="btn btn-light">
+            Go to My Portal →
+        </a>
+    {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-light">
+            Sign In →
+        </a>
+    {% endif %}
+</section>
+
+<footer class="home-footer">
+    <strong>Smart Logistics</strong>
+    <p>Smart Transfer and Logistics Planning System</p>
+    <small>Organising deliveries through digital logistics management.</small>
+</footer>
+
+{% endblock %}
