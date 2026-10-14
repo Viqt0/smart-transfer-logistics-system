@@ -1,7 +1,84 @@
-{% extends "base.html" %}{% block content %}
-<h1>Dashboard</h1><div class="cards">
-<div><b>{{counts.deliveries}}</b><span>Total Deliveries</span></div><div><b>{{counts.drivers}}</b><span>Drivers</span></div>
-<div><b>{{counts.vehicles}}</b><span>Vehicles</span></div><div><b>{{counts.failed}}</b><span>Failed Deliveries</span></div></div>
-<h2>Recent Deliveries</h2><table><tr><th>ID</th><th>Customer</th><th>Destination</th><th>Schedule</th><th>Status</th><th>Driver</th><th>Vehicle</th></tr>
-{% for d in recent %}<tr><td>#{{d.id}}</td><td>{{d.customer}}</td><td>{{d.destination}}</td><td>{{d.schedule_date}} {{d.schedule_time}}</td>
-<td><span class="status">{{d.status}}</span></td><td>{{d.driver or '-'}}</td><td>{{d.plate_no or '-'}}</td></tr>{% else %}<tr><td colspan="7">No deliveries yet.</td></tr>{% endfor %}</table>{% endblock %}
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Overview of your transfer and logistics operations.</p>
+</section>
+
+<section class="stat-grid">
+
+    <div class="stat-card">
+        <div class="feature-icon">📦</div>
+        <h3>Total Deliveries</h3>
+        <div class="number">{{ counts.deliveries }}</div>
+        <p>All recorded delivery requests</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="feature-icon">🚚</div>
+        <h3>Drivers</h3>
+        <div class="number">{{ counts.drivers }}</div>
+        <p>Registered drivers</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="feature-icon">🚛</div>
+        <h3>Vehicles</h3>
+        <div class="number">{{ counts.vehicles }}</div>
+        <p>Registered logistics vehicles</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="feature-icon">⚠️</div>
+        <h3>Failed Deliveries</h3>
+        <div class="number">{{ counts.failed }}</div>
+        <p>Deliveries requiring attention</p>
+    </div>
+
+</section>
+
+<section class="recent-section">
+    <h2>Recent Deliveries</h2>
+    <p>Review the latest delivery activity recorded in the system.</p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Destination</th>
+                    <th>Schedule</th>
+                    <th>Status</th>
+                    <th>Driver</th>
+                    <th>Vehicle</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for d in recent %}
+                <tr>
+                    <td>#{{ d.id }}</td>
+                    <td>{{ d.customer }}</td>
+                    <td>{{ d.destination }}</td>
+                    <td>{{ d.schedule_date }} {{ d.schedule_time }}</td>
+                    <td>
+                        <span class="status-badge">{{ d.status }}</span>
+                    </td>
+                    <td>{{ d.driver or '-' }}</td>
+                    <td>{{ d.plate_no or '-' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">No deliveries have been recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %}
