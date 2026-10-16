@@ -321,17 +321,41 @@ def dashboard():
     con.close()
     return render_template("dashboard.html", counts=counts, recent=recent)
 
+
 @app.route("/deliveries")
 @login_required
-@role_required("Administrator", "Logistics Manager", "Dispatcher", "Driver")
 def deliveries():
     con = db()
-    rows = con.execute("""SELECT d.*, dr.name driver, v.plate_no FROM deliveries d
-        LEFT JOIN drivers dr ON d.driver_id=dr.id
-        LEFT JOIN vehicles v ON d.vehicle_id=v.id
-        ORDER BY d.id DESC""").fetchall()
+
+    role = session.get("role")
+
+    if role == "Customer":
+        rows = con.execute("""
+            SELECT d.*, dr.name AS driver, v.plate_no
+            FROM deliveries d
+            LEFT JOIN drivers dr ON d.driver_id = dr.id
+            LEFT JOIN vehicles v ON d.vehicle_id = v.id
+            WHERE LOWER(d.customer) = LOWER(?)
+            ORDER BY d.id DESC
+        """, (session.get("name", ""),)).fetchall()
+
+    elif role in ("Administrator", "Logistics Manager", "Dispatcher", "Driver"):
+        rows = con.execute("""
+            SELECT d.*, dr.name AS driver, v.plate_no
+            FROM deliveries d
+            LEFT JOIN drivers dr ON d.driver_id = dr.id
+            LEFT JOIN vehicles v ON d.vehicle_id = v.id
+            ORDER BY d.id DESC
+        """).fetchall()
+
+    else:
+        con.close()
+        flash("You do not have permission to access this section.")
+        return redirect(url_for("portal"))
+
     con.close()
     return render_template("deliveries.html", deliveries=rows)
+
 
 @app.route("/deliveries/add", methods=["GET","POST"])
 @login_required
