@@ -54,6 +54,7 @@ def init_db():
 
     CREATE TABLE IF NOT EXISTS deliveries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER REFERENCES users(id),
         customer TEXT NOT NULL,
         phone TEXT,
         origin TEXT,
@@ -81,6 +82,16 @@ def init_db():
         FOREIGN KEY(vehicle_id) REFERENCES vehicles(id)
     );
     """)
+
+        columns = [
+        row["name"]
+        for row in con.execute("PRAGMA table_info(deliveries)").fetchall()
+    ]
+
+    if "user_id" not in columns:
+        con.execute(
+            "ALTER TABLE deliveries ADD COLUMN user_id INTEGER REFERENCES users(id)"
+        )
 
     con.commit()
     con.close()
@@ -361,16 +372,37 @@ def deliveries():
 @login_required
 @role_required("Administrator", "Logistics Manager", "Dispatcher", "Customer")
 def add_delivery():
-    if request.method=="POST":
-        con=db()
-        con.execute("""INSERT INTO deliveries
-        (customer,phone,origin,destination,package_weight,package_size,priority,schedule_date,schedule_time)
-        VALUES (?,?,?,?,?,?,?,?,?)""", tuple(request.form.get(x) for x in
-        ["customer","phone","origin","destination","package_weight","package_size","priority","schedule_date","schedule_time"]))
-        con.commit(); con.close()
+    if request.method == "POST":
+        con = db()
+
+        con.execute("""
+            INSERT INTO deliveries
+            (
+                user_id, customer, phone, origin, destination,
+                package_weight, package_size, priority,
+                schedule_date, schedule_time
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            session.get("user_id"),
+            request.form.get("customer"),
+            request.form.get("phone"),
+            request.form.get("origin"),
+            request.form.get("destination"),
+            request.form.get("package_weight"),
+            request.form.get("package_size"),
+            request.form.get("priority"),
+            request.form.get("schedule_date"),
+            request.form.get("schedule_time")
+        ))
+
+        con.commit()
+        con.close()
+
         flash("Delivery created.")
         return redirect(url_for("deliveries"))
-    return render_template("delivery_form.html")
+
+    return render_template("delivery_form.html"))
 
 @app.route("/deliveries/<int:id>/assign", methods=["GET", "POST"])
 @login_required
