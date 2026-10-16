@@ -335,7 +335,7 @@ def deliveries():
 
 @app.route("/deliveries/add", methods=["GET","POST"])
 @login_required
-@role_required("Administrator", "Logistics Manager", "Dispatcher")
+@role_required("Administrator", "Logistics Manager", "Dispatcher", "Customer")
 def add_delivery():
     if request.method=="POST":
         con=db()
