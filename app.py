@@ -83,7 +83,7 @@ def init_db():
     );
     """)
 
-        columns = [
+    columns = [
         row["name"]
         for row in con.execute("PRAGMA table_info(deliveries)").fetchall()
     ]
