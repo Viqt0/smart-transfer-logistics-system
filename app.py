@@ -402,7 +402,7 @@ def add_delivery():
         flash("Delivery created.")
         return redirect(url_for("deliveries"))
 
-    return render_template("delivery_form.html"))
+    return render_template("delivery_form.html")
 
 @app.route("/deliveries/<int:id>/assign", methods=["GET", "POST"])
 @login_required
